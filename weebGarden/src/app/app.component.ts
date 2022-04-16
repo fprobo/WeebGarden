@@ -1,7 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EChartsOption } from 'echarts';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +13,7 @@ export class AppComponent {
   jsonInput: string = "";
   formattedData: any;
   tabSelected: number = 1;
+  selectedManga: any;
 
   chartOption: EChartsOption = {
     xAxis: {
@@ -29,9 +29,9 @@ export class AppComponent {
         type: 'line',
       },
     ],
-  };
+  };  
 
-  constructor() { }
+  constructor(private modalService: NgbModal) { }
 
   toJSON() {
     console.log("JSON: ", JSON.parse(this.jsonInput).filter((x: any) => x.error == undefined));
@@ -42,4 +42,14 @@ export class AppComponent {
   cleanTextArea = () => { this.jsonInput = ""; this.formattedData = [] }
 
   getName = (manga: any) => { return manga.title_english ? manga.title_english : manga.title_japanese }
+  
+  open(content: any, id: number) {
+    this.selectedManga = this.formattedData.find((x: any) => x.mal_id == id);
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
+  }
+
+  closeModal() {
+    this.modalService.dismissAll();
+    this.selectedManga = undefined;
+  }
 }
