@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container ">
   <div class="row">
     <div class="mb-3 col-9">
       <label for="exampleFormControlTextarea1" class="form-label"></label>
@@ -6,21 +6,48 @@
       </textarea>
     </div>
     <div class="mt-3 col-3">
+      <div class="m-3">
+        <label class="btn-primary" ngbButtonLabel>
+          <input type="button" class="btn-check" (click)="toJSON()"> Calcola
+        </label>
+      </div>
+      <div class="m-3">
       <label class="btn-primary" ngbButtonLabel>
-        <input type="checkbox" class="btn-check" (click)="toJSON()"> Calcola
+        <input type="button" class="btn-check" (click)="cleanTextArea()"> Pulisci
       </label>
+      </div>
     </div>
   </div>
 </div>
-<div class="container">
-  <div class="row justify-content-md-center">
-    <div class="col-md-4" *ngFor="let manga of formattedData">
-      <img [src]="manga.data.images.jpg.image_url"> <br>
-      {{ getName(manga.data) }}
-    </div>
-  </div>
-</div>
-
-
-<!-- <input type="file" (change)="onFileSelected($event)"> -->
-<!-- <div echarts [options]="chartOption" class="demo-chart"></div> -->
+<ng-container *ngIf="formattedData">
+  <ul ngbNav #nav="ngbNav" [(activeId)]="tabSelected" class="nav-tabs justify-content-center mt-3">
+    <li [ngbNavItem]="1">
+      <a ngbNavLink>Elenco</a>
+      <ng-template ngbNavContent>
+        <div class="container">
+          <div class="row justify-content-md-center">
+            <div class="col-md-4 mb-3 mt-3" *ngFor="let manga of formattedData">
+              <img [src]="manga.images.jpg.image_url" class="rounded-3"> <br>
+              {{ getName(manga) }}
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="2">
+      <a ngbNavLink>Chart</a>
+      <ng-template ngbNavContent>
+        <div echarts [options]="chartOption" class="demo-chart"></div>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="3">
+      <a ngbNavLink>Altro</a>
+      <ng-template ngbNavContent>
+        <p>3</p>
+      </ng-template>
+    </li>
+  </ul>
+  
+  <div [ngbNavOutlet]="nav" class="mt-2"></div>
+  
+</ng-container>
