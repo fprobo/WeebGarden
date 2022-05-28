@@ -45,25 +45,25 @@
       <ng-template ngbNavContent>
         <div class="container">
           <div class="row justify-content-md-center">
-            <div class="col-md-6 mb-3 mt-3">
+            <div class="col-md-6 card overflow-hidden">
               <h5><b>Top 10 autori: </b></h5>
               <ng-container *ngFor="let author of groupByAuthor | slice:0:10; let i=index">
                 {{i+1}}. {{ formatMangakaName(author[0].authors[0].name) }}: {{ author.length }} <br>
               </ng-container>
             </div>
-            <div class="col-md-6 mb-3 mt-3">
+            <div class="col-md-6 card">
               <h5><b>Top 10 manga più lunghi: </b></h5>
               <ng-container *ngFor="let manga of dataByLength | slice:0:10; let i=index">
                 {{i+1}}. {{ getName(manga) }}: {{ manga.chapters }} <br>
               </ng-container>
             </div>
-            <div class="col-md-6 mb-3 mt-3">
+            <div class="col-md-6 card">
               <h5><b>Top 10 rating: </b></h5>
               <ng-container *ngFor="let manga of dataByScore | slice:0:10; let i=index">
                 {{i+1}}. {{ getName(manga) }}: {{ manga.score }} <br>
               </ng-container>
             </div>
-            <div class="col-md-6 mb-3 mt-3">
+            <div class="col-md-6 card">
               <h5><b>Top 10 più vecchi: </b></h5>
               <ng-container *ngFor="let manga of dataByPublishDate | slice:0:10; let i=index">
                 {{i+1}}. {{ getName(manga) }}: {{ manga.published.from | date:'dd-MM-yyyy' }} <br>
