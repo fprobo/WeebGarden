@@ -17,7 +17,8 @@ export class AppComponent {
   groupByAuthor: Array<any> = [];
   dataByScore: Array<any> = [];
   dataByLength: Array<any> = [];
-  dataByPublishDate: Array<any> = [];;
+  dataByPublishDate: Array<any> = [];
+  dataAuthorsChapters: Array<any> = [];
 
   chartOption: EChartsOption = {
     xAxis: {
@@ -44,7 +45,8 @@ export class AppComponent {
     this.groupByMangaByAuthor();
     this.dataByLength = this.sortByLength();
     this.dataByScore = this.sortByScore();
-    this.dataByPublishDate = this.sortByPublishDate()
+    this.dataByPublishDate = this.sortByPublishDate();
+    this.dataAuthorsChapters = this.sortByAuthorsLength();
   }
 
   cleanTextArea = () => { this.jsonInput = ""; this.formattedData = [] }
@@ -83,6 +85,21 @@ export class AppComponent {
   sortByScore() {
     let tempData = [ ...this.formattedData];
     return tempData.sort((a: any, b:any) => b.score - a.score);
+  }
+
+  sortByAuthorsLength() {
+    let authorsTotalChapters: any[] = [];
+    
+    this.groupByAuthor.forEach(mangaList => {
+      authorsTotalChapters.push({
+        name: mangaList[0].authors[0].name,
+        totalChapters: mangaList.reduce((accumulator: any, obj: any) => {
+          return accumulator + obj.chapters;
+        }, 0)
+      })
+    })
+
+    return authorsTotalChapters.sort((a: any, b: any) => b.totalChapters - a.totalChapters);
   }
   
   groupBy = <T, K extends keyof any>(list: T[], getKey: (item: T) => K) =>

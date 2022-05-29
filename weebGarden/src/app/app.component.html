@@ -46,7 +46,7 @@
         <div class="container">
           <div class="row justify-content-md-center">
             <div class="col-md-6 card overflow-hidden">
-              <h5><b>Top 10 autori: </b></h5>
+              <h5><b>Top 10 autori per n. manga: </b></h5>
               <ng-container *ngFor="let author of groupByAuthor | slice:0:10; let i=index">
                 {{i+1}}. {{ formatMangakaName(author[0].authors[0].name) }}: {{ author.length }} <br>
               </ng-container>
@@ -69,12 +69,15 @@
                 {{i+1}}. {{ getName(manga) }}: {{ manga.published.from | date:'dd-MM-yyyy' }} <br>
               </ng-container>
             </div>
-            <div class="col-md-6 mb-3 mt-3">
-              <h5><b>Top 5 più recenti: </b></h5>
+            <div class="col-md-6 card">
+              <h5><b>Top 10 autori per n. capitoli: </b></h5>
+              <ng-container *ngFor="let author of dataAuthorsChapters | slice:0:10; let i=index">
+                {{i+1}}. {{ formatMangakaName(author.name) }}: {{ author.totalChapters }} <br>
+              </ng-container>
             </div>
-            <div class="col-md-6 mb-3 mt-3">
+            <!-- <div class="col-md-6 mb-3 mt-3">
               <h5><b>Top 5 ?: </b></h5>
-            </div>
+            </div> -->
           </div>
         </div>
       </ng-template>
@@ -96,7 +99,7 @@
       <b>Autore: </b> {{ selectedManga.authors[0].name }} <br>
       <b>Voto: </b> {{ selectedManga.score }} <br>
       <b>N. Capitoli: </b> {{ selectedManga.chapters }} <br>
-      <!-- <b>Sinossi: </b> {{ selectedManga.synopsis }} <br> -->
+      <b>Sinossi: </b> {{ selectedManga.synopsis }} <br> -->
     </ng-container>
   </div>
 </ng-template>
