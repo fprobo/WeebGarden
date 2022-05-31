@@ -15,7 +15,8 @@ export class AppComponent {
   tabSelected: number = 1;
   selectedManga: any;
   groupByAuthor: Array<any> = [];
-  dataByScore: Array<any> = [];
+  dataByScoreBest: Array<any> = [];
+  dataByScoreWorst: Array<any> = [];
   dataByLength: Array<any> = [];
   dataByPublishDate: Array<any> = [];
   dataAuthorsChapters: Array<any> = [];
@@ -44,7 +45,8 @@ export class AppComponent {
     console.log("JSON: ", this.formattedData);
     this.groupByMangaByAuthor();
     this.dataByLength = this.sortByLength();
-    this.dataByScore = this.sortByScore();
+    this.dataByScoreBest = this.sortByScoreBest();
+    this.dataByScoreWorst = this.sortByScoreWorst();
     this.dataByPublishDate = this.sortByPublishDate();
     this.dataAuthorsChapters = this.sortByAuthorsLength();
   }
@@ -68,6 +70,11 @@ export class AppComponent {
     this.selectedManga = undefined;
   }
 
+  countChapters() {
+    let tempData = [ ...this.formattedData.filter(x => x.chapters != null)];
+    return this.sumChaptersReduce(tempData);
+  }
+
   groupByMangaByAuthor() {
     this.groupByAuthor = Object.values(this.groupBy(this.formattedData, x => x.authors[0].mal_id)).sort().reverse();
   }
@@ -82,9 +89,14 @@ export class AppComponent {
     return tempData.sort((a: any, b:any) => new Date(a.published.from).getTime() - new Date(b.published.from).getTime());
   }
 
-  sortByScore() {
+  sortByScoreBest() {
     let tempData = [ ...this.formattedData];
     return tempData.sort((a: any, b:any) => b.score - a.score);
+  }
+
+  sortByScoreWorst() {
+    let tempData = [ ...this.formattedData];
+    return tempData.sort((a: any, b:any) => a.score - b.score);
   }
 
   sortByAuthorsLength() {
@@ -93,13 +105,17 @@ export class AppComponent {
     this.groupByAuthor.forEach(mangaList => {
       authorsTotalChapters.push({
         name: mangaList[0].authors[0].name,
-        totalChapters: mangaList.reduce((accumulator: any, obj: any) => {
-          return accumulator + obj.chapters;
-        }, 0)
+        totalChapters: this.sumChaptersReduce(mangaList)
       })
     })
 
     return authorsTotalChapters.sort((a: any, b: any) => b.totalChapters - a.totalChapters);
+  }
+
+  sumChaptersReduce(list: any) {
+    return list.reduce((accumulator: any, obj: any) => {
+      return accumulator + obj.chapters;
+    }, 0)
   }
   
   groupBy = <T, K extends keyof any>(list: T[], getKey: (item: T) => K) =>

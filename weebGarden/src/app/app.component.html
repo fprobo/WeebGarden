@@ -1,105 +1,123 @@
-<div class="container ">
-  <div class="row">
-    <div class="mb-3 col-9">
-      <label for="exampleFormControlTextarea1" class="form-label"></label>
-      <textarea class="form-control" id="exampleFormControlTextarea1" [(ngModel)]="jsonInput" rows="6">
-      </textarea>
-    </div>
-    <div class="mt-3 col-3">
-      <div class="m-3">
+<div class="body">
+  <div class="container">
+    <div class="row">
+      <div class="mb-3 col-9">
+        <label for="exampleFormControlTextarea1" class="form-label"></label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" [(ngModel)]="jsonInput" rows="6">
+        </textarea>
+      </div>
+      <div class="mt-3 col-3">
+        <div class="m-3">
+          <label class="btn-primary" ngbButtonLabel>
+            <input type="button" class="btn-check" (click)="toJSON()"> Calcola
+          </label>
+        </div>
+        <div class="m-3">
         <label class="btn-primary" ngbButtonLabel>
-          <input type="button" class="btn-check" (click)="toJSON()"> Calcola
+          <input type="button" class="btn-check" (click)="cleanTextArea()"> Pulisci
         </label>
-      </div>
-      <div class="m-3">
-      <label class="btn-primary" ngbButtonLabel>
-        <input type="button" class="btn-check" (click)="cleanTextArea()"> Pulisci
-      </label>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<ng-container *ngIf="formattedData">
-  <ul ngbNav #nav="ngbNav" [(activeId)]="tabSelected" class="nav-tabs justify-content-center mt-3">
-    <li [ngbNavItem]="1">
-      <a ngbNavLink>Elenco</a>
-      <ng-template ngbNavContent>
-        <div class="container">
-          <div class="row justify-content-md-center">
-            <div class="col-md-4 mb-3 mt-3" *ngFor="let manga of formattedData">
-              <img [src]="manga.images.jpg.image_url" class="rounded-3" (click)="open(content, manga.mal_id)"> <br>
-              {{ getName(manga) }}
+  <ng-container *ngIf="formattedData.length > 0">
+      <ul ngbNav #nav="ngbNav" [(activeId)]="tabSelected" class="nav-tabs justify-content-center mt-3">
+        <li [ngbNavItem]="1">
+          <a ngbNavLink>Elenco</a>
+          <ng-template ngbNavContent>
+            <div class="container">
+              <div class="row justify-content-md-center">
+                <div class="col-md-4 mb-3 mt-3" *ngFor="let manga of formattedData">
+                  <img [src]="manga.images.jpg.image_url" class="rounded-3" (click)="open(content, manga.mal_id)"> <br>
+                  {{ getName(manga) }}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </ng-template>
-    </li>
-    <li [ngbNavItem]="2">
-      <a ngbNavLink>Chart</a>
-      <ng-template ngbNavContent>
-        <div echarts [options]="chartOption" class="demo-chart"></div>
-      </ng-template>
-    </li>
-    <li [ngbNavItem]="3">
-      <a ngbNavLink>Statistiche</a>
-      <ng-template ngbNavContent>
-        <div class="container">
-          <div class="row justify-content-md-center">
-            <div class="col-md-6 card overflow-hidden">
-              <h5><b>Top 10 autori per n. manga: </b></h5>
-              <ng-container *ngFor="let author of groupByAuthor | slice:0:10; let i=index">
-                {{i+1}}. {{ formatMangakaName(author[0].authors[0].name) }}: {{ author.length }} <br>
-              </ng-container>
-            </div>
-            <div class="col-md-6 card">
-              <h5><b>Top 10 manga più lunghi: </b></h5>
-              <ng-container *ngFor="let manga of dataByLength | slice:0:10; let i=index">
-                {{i+1}}. {{ getName(manga) }}: {{ manga.chapters }} <br>
-              </ng-container>
-            </div>
-            <div class="col-md-6 card">
-              <h5><b>Top 10 rating: </b></h5>
-              <ng-container *ngFor="let manga of dataByScore | slice:0:10; let i=index">
-                {{i+1}}. {{ getName(manga) }}: {{ manga.score }} <br>
-              </ng-container>
-            </div>
-            <div class="col-md-6 card">
-              <h5><b>Top 10 più vecchi: </b></h5>
-              <ng-container *ngFor="let manga of dataByPublishDate | slice:0:10; let i=index">
-                {{i+1}}. {{ getName(manga) }}: {{ manga.published.from | date:'dd-MM-yyyy' }} <br>
-              </ng-container>
-            </div>
-            <div class="col-md-6 card">
-              <h5><b>Top 10 autori per n. capitoli: </b></h5>
-              <ng-container *ngFor="let author of dataAuthorsChapters | slice:0:10; let i=index">
-                {{i+1}}. {{ formatMangakaName(author.name) }}: {{ author.totalChapters }} <br>
-              </ng-container>
-            </div>
-            <!-- <div class="col-md-6 mb-3 mt-3">
-              <h5><b>Top 5 ?: </b></h5>
-            </div> -->
-          </div>
-        </div>
-      </ng-template>
-    </li>
-  </ul>
-  
-  <div [ngbNavOutlet]="nav" class="mt-2"></div>
-  
-</ng-container>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+          <a ngbNavLink>Chart</a>
+          <ng-template ngbNavContent>
+            <div echarts [options]="chartOption" class="demo-chart"></div>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="3">
+          <a ngbNavLink>Statistiche</a>
+          <ng-template ngbNavContent>
+            <div class="container">
+              <div class="row justify-content-md-center">
+                <div class="col-md-6 card">
+                  <h5><b>Panoramica statistiche </b></h5>
+                    N. totale manga: {{ formattedData.length }} <br>
+                    N. totale capitoli: {{ countChapters() }} <br>
+                    Capitoli per manga: {{ countChapters() / formattedData.length | number : '1.2-2' }} <br>
 
-<ng-template #content let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Dettagli</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
-  </div>
-  <div class="modal-body">
-    <ng-container *ngIf="selectedManga">
-      <b>Titolo: </b> {{ getName(selectedManga) }} <br>
-      <b>Autore: </b> {{ selectedManga.authors[0].name }} <br>
-      <b>Voto: </b> {{ selectedManga.score }} <br>
-      <b>N. Capitoli: </b> {{ selectedManga.chapters }} <br>
-      <b>Sinossi: </b> {{ selectedManga.synopsis }} <br> -->
-    </ng-container>
-  </div>
-</ng-template>
+                </div>
+                <div class="col-md-6 card">
+                  <h5><b>Top 10 autori per n. manga </b></h5>
+                  <ng-container *ngFor="let author of groupByAuthor | slice:0:10; let i=index">
+                    {{i+1}}. {{ formatMangakaName(author[0].authors[0].name) }}: {{ author.length }} <br>
+                  </ng-container>
+                </div>
+                <div class="col-md-6 card">
+                  <h5><b>Top 10 manga più lunghi </b></h5>
+                  <ng-container *ngFor="let manga of dataByLength | slice:0:10; let i=index">
+                    {{i+1}}. {{ getName(manga) }}: {{ manga.chapters }} <br>
+                  </ng-container>
+                </div>
+                <div class="col-md-6 card">
+                  <h5><b>Top 10 migliori </b></h5>
+                  <ng-container *ngFor="let manga of dataByScoreBest | slice:0:10; let i=index">
+                    {{i+1}}. {{ getName(manga) }}: {{ manga.score }} <br>
+                  </ng-container>
+                </div>
+                <div class="col-md-6 card">
+                  <h5><b>Top 10 peggiori </b></h5>
+                  <ng-container *ngFor="let manga of dataByScoreWorst | slice:0:10; let i=index">
+                    {{i+1}}. {{ getName(manga) }}: {{ manga.score }} <br>
+                  </ng-container>
+                </div>
+                <div class="col-md-6 card">
+                  <h5><b>Top 10 più vecchi </b></h5>
+                  <ng-container *ngFor="let manga of dataByPublishDate | slice:0:10; let i=index">
+                    {{i+1}}. {{ getName(manga) }}: {{ manga.published.from | date:'dd-MM-yyyy' }} <br>
+                  </ng-container>
+                </div>
+                <div class="col-md-6 card">
+                  <h5><b>Top 10 autori per n. capitoli </b></h5>
+                  <ng-container *ngFor="let author of dataAuthorsChapters | slice:0:10; let i=index">
+                    {{i+1}}. {{ formatMangakaName(author.name) }}: {{ author.totalChapters }} <br>
+                  </ng-container>
+                </div>
+                <!-- <div class="col-md-6 mb-3 mt-3">
+                  <h5><b>Top 5 ?: </b></h5>
+                </div> -->
+              </div>
+            </div>
+          </ng-template>
+        </li>
+      </ul>
+      
+      <div [ngbNavOutlet]="nav" class="mt-2"></div>
+  </ng-container>
+  <ng-container *ngIf="formattedData.length == 0">
+    <div class="result"></div>
+  </ng-container>
+  
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Dettagli</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+    </div>
+    <div class="modal-body">
+      <ng-container *ngIf="selectedManga">
+        <b>Titolo: </b> {{ getName(selectedManga) }} <br>
+        <b>Autore: </b> {{ selectedManga.authors[0].name }} <br>
+        <b>Voto: </b> {{ selectedManga.score }} <br>
+        <b>N. Capitoli: </b> {{ selectedManga.chapters }} <br>
+        <b>Sinossi: </b> {{ selectedManga.synopsis }} <br> -->
+      </ng-container>
+    </div>
+  </ng-template>
+  
+</div>

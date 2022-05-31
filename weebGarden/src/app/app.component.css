@@ -13,11 +13,15 @@
     flex-direction: column;
     min-width: 0;
     word-wrap: break-word;
-    background-color: #f4f4f4;
+    background-color: #fff;
     background-clip: border-box;
     border: 1px solid rgba(0, 0, 0, 0.09);
     border-radius: 0.4rem;
     padding: 1em;
     margin: 1em;
     max-width: 40%;
+}
+
+.result {
+    background-color: #eff2f6;
 }
