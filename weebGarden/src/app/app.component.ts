@@ -20,22 +20,7 @@ export class AppComponent {
   dataByLength: Array<any> = [];
   dataByPublishDate: Array<any> = [];
   dataAuthorsChapters: Array<any> = [];
-
-  chartOption: EChartsOption = {
-    xAxis: {
-      type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    },
-    yAxis: {
-      type: 'value',
-    },
-    series: [
-      {
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-        type: 'line',
-      },
-    ],
-  };  
+  decades: Array<number> = [];
 
   constructor(private modalService: NgbModal) { }
 
@@ -49,6 +34,51 @@ export class AppComponent {
     this.dataByScoreWorst = this.sortByScoreWorst();
     this.dataByPublishDate = this.sortByPublishDate();
     this.dataAuthorsChapters = this.sortByAuthorsLength();
+
+    this.decades = this.countByDecades();
+  }
+
+  setPieChart(data: number[]) {
+    return <EChartsOption>{
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        top: '5%',
+        left: 'center'
+      },
+      series: [
+        {
+          name: 'Access From',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+            position: 'center'
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: '40',
+              fontWeight: 'bold'
+            }
+          },
+          labelLine: {
+            show: false
+          },
+          data: [
+            {value: data[0], name: '60s'},
+            {value: data[1], name: '70s'},
+            {value: data[2], name: '80s'},
+            {value: data[3], name: '90s'},
+            {value: data[4], name: '00s'},
+            {value: data[5], name: '10s'},
+            {value: data[6], name: '20s'},
+          ]
+        }
+      ]
+    };
   }
 
   cleanTextArea = () => { this.jsonInput = ""; this.formattedData = [] }
@@ -110,6 +140,32 @@ export class AppComponent {
     })
 
     return authorsTotalChapters.sort((a: any, b: any) => b.totalChapters - a.totalChapters);
+  }
+
+  countByDecades() {
+    let tempData = [ ...this.formattedData];
+    let countByDecade: number[] = [0, 0, 0, 0, 0, 0, 0];
+
+    tempData.map(x => x.published.from).forEach((data: Date) => {
+      let year = new Date(data).getFullYear();
+
+      if (year < 1970)
+        countByDecade[0] += 1; 
+      if (year >= 1970 && year < 1980)
+        countByDecade[1] += 1; 
+      if (year >= 1980 && year < 1990)
+        countByDecade[2] += 1; 
+      if (year >= 1990 && year < 2000)
+        countByDecade[3] += 1; 
+      if (year >= 2000 && year < 2010)
+        countByDecade[4] += 1; 
+      if (year >= 2010 && year < 2020)
+        countByDecade[5] += 1; 
+      if (year >= 2020)
+        countByDecade[6] += 1; 
+    });
+
+    return countByDecade;
   }
 
   sumChaptersReduce(list: any) {
