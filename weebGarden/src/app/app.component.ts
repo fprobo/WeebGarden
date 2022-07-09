@@ -68,13 +68,15 @@ export class AppComponent {
             show: false
           },
           data: [
-            {value: data[0], name: '60s'},
-            {value: data[1], name: '70s'},
-            {value: data[2], name: '80s'},
-            {value: data[3], name: '90s'},
-            {value: data[4], name: '00s'},
-            {value: data[5], name: '10s'},
-            {value: data[6], name: '20s'},
+            {value: data[0], name: '40s'},
+            {value: data[1], name: '50s'},
+            {value: data[2], name: '60s'},
+            {value: data[3], name: '70s'},
+            {value: data[4], name: '80s'},
+            {value: data[5], name: '90s'},
+            {value: data[6], name: '00s'},
+            {value: data[7], name: '10s'},
+            {value: data[8], name: '20s'},
           ]
         }
       ]
@@ -115,7 +117,7 @@ export class AppComponent {
   }
 
   sortByPublishDate() {
-    let tempData = [ ...this.formattedData.filter(x => x.chapters != null)];
+    let tempData = [ ...this.formattedData];
     return tempData.sort((a: any, b:any) => new Date(a.published.from).getTime() - new Date(b.published.from).getTime());
   }
 
@@ -144,25 +146,30 @@ export class AppComponent {
 
   countByDecades() {
     let tempData = [ ...this.formattedData];
-    let countByDecade: number[] = [0, 0, 0, 0, 0, 0, 0];
+    let countByDecade: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
     tempData.map(x => x.published.from).forEach((data: Date) => {
       let year = new Date(data).getFullYear();
 
-      if (year < 1970)
+
+      if (year < 1950)
         countByDecade[0] += 1; 
-      if (year >= 1970 && year < 1980)
+      if (year >= 1950 && year < 1960)
         countByDecade[1] += 1; 
-      if (year >= 1980 && year < 1990)
+      if (year >= 1960 && year < 1970)
         countByDecade[2] += 1; 
-      if (year >= 1990 && year < 2000)
+      if (year >= 1970 && year < 1980)
         countByDecade[3] += 1; 
-      if (year >= 2000 && year < 2010)
+      if (year >= 1980 && year < 1990)
         countByDecade[4] += 1; 
-      if (year >= 2010 && year < 2020)
+      if (year >= 1990 && year < 2000)
         countByDecade[5] += 1; 
-      if (year >= 2020)
+      if (year >= 2000 && year < 2010)
         countByDecade[6] += 1; 
+      if (year >= 2010 && year < 2020)
+        countByDecade[7] += 1; 
+      if (year >= 2020)
+        countByDecade[8] += 1; 
     });
 
     return countByDecade;
